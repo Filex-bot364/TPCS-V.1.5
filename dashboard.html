@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#0a1f2c">
+
+    <link rel="icon" href="logo.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <title>TPCS Dashboard</title>
+
+    <style>
+        /* ==========================================================
+           DESIGN TOKENS (same family as the other TPCS pages)
+        ========================================================== */
+        :root {
+            --ink: #0a1f2c;
+            --ink-2: #123446;
+            --teal: #0e7c86;
+            --sea: #7fd1c7;
+            --amber: #f5b544;
+            --gold-light: #ffe3a1;
+            --gold-dark: #d9962a;
+            --text: #dbe9ec;
+            --muted: #9fb8c0;
+            --dim: #7fa0aa;
+
+            --font-display: 'Bricolage Grotesque', 'Plus Jakarta Sans', system-ui, sans-serif;
+            --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+            --gold-gradient: linear-gradient(135deg, var(--gold-light), var(--amber) 55%, var(--gold-dark));
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: var(--font-body);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.6;
+            background:
+                radial-gradient(circle at 10% 0%, rgba(14, 124, 134, .3) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(245, 181, 68, .12) 0%, transparent 38%),
+                linear-gradient(160deg, #0a1f2c, #07151f);
+            background-attachment: fixed;
+        }
+
+        /* ripple rings: same motif as the home page hero */
+        body::before {
+            content: "";
+            position: fixed;
+            width: 760px;
+            height: 760px;
+            right: -260px;
+            top: -280px;
+            border-radius: 50%;
+            background: repeating-radial-gradient(circle, transparent 0 38px, rgba(127, 209, 199, .07) 38px 39px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        a:focus-visible,
+        input:focus-visible,
+        .tpcs_dash_notify:focus-visible {
+            outline: 3px solid var(--amber);
+            outline-offset: 3px;
+        }
+
+        /* ==========================================================
+           TOP NAVBAR
+        ========================================================== */
+        .tpcs_dash_topbar {
+            position: fixed;
+            top: 14px;
+            left: 18px;
+            right: 18px;
+            height: 72px;
+            padding: 0 22px 0 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            background: rgba(10, 31, 44, .72);
+            backdrop-filter: blur(16px) saturate(140%);
+            -webkit-backdrop-filter: blur(16px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .28);
+            z-index: 1000;
+        }
+
+        .tpcs_dash_brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tpcs_dash_brand img {
+            width: 48px;
+            height: 48px;
+            padding: 6px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #1b3a4d, #0d2431);
+            border: 1px solid rgba(255, 255, 255, .12);
+        }
+
+        .tpcs_dash_brand h2 {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -.03em;
+            color: #fff;
+        }
+
+        .tpcs_dash_brand h2 span {
+            color: var(--amber);
+        }
+
+        .tpcs_dash_right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .tpcs_dash_search {
+            position: relative;
+        }
+
+        .tpcs_dash_search input {
+            width: 280px;
+            height: 46px;
+            padding: 0 18px 0 46px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            border-radius: 999px;
+            outline: none;
+            background: rgba(255, 255, 255, .05);
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 14px;
+            transition: border-color .3s, background .3s, box-shadow .3s;
+        }
+
+        .tpcs_dash_search input::placeholder {
+            color: #6f8b95;
+        }
+
+        .tpcs_dash_search input:focus {
+            background: rgba(255, 255, 255, .08);
+            border-color: var(--amber);
+            box-shadow: 0 0 0 4px rgba(245, 181, 68, .16);
+        }
+
+        .tpcs_dash_search i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dim);
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .tpcs_dash_notify {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 17px;
+            color: var(--amber);
+            background: rgba(245, 181, 68, .12);
+            border: 1px solid rgba(245, 181, 68, .45);
+            transition: background .25s, color .25s, transform .25s;
+        }
+
+        .tpcs_dash_notify:hover {
+            background: var(--amber);
+            color: var(--ink);
+            transform: translateY(-2px);
+        }
+
+        /* ==========================================================
+           SIDEBAR
+        ========================================================== */
+        .tpcs_dash_sidebar {
+            position: fixed;
+            top: 100px;
+            left: 18px;
+            bottom: 18px;
+            width: 260px;
+            padding: 22px 14px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: linear-gradient(180deg, rgba(20, 56, 75, .7), rgba(10, 31, 44, .85));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 26px;
+            box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .6);
+            z-index: 900;
+        }
+
+        .tpcs_dash_sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border: 1px solid transparent;
+            border-radius: 16px;
+            text-decoration: none;
+            color: #b9cdd3;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background .25s, color .25s, transform .25s, border-color .25s;
+        }
+
+        .tpcs_dash_sidebar a i {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .06);
+            font-size: 15px;
+            transition: background .25s, color .25s;
+        }
+
+        .tpcs_dash_sidebar a:hover {
+            background: rgba(255, 255, 255, .06);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        .tpcs_dash_sidebar a.active {
+            background: linear-gradient(90deg, rgba(245, 181, 68, .2), rgba(245, 181, 68, .04));
+            border-color: rgba(245, 181, 68, .4);
+            color: #fff;
+        }
+
+        .tpcs_dash_sidebar a.active i {
+            background: var(--gold-gradient);
+            color: var(--ink);
+        }
+
+        /* logout sits at the bottom, separated by a rule */
+        .tpcs_dash_sidebar a:last-child {
+            margin-top: auto;
+            margin-bottom: 0;
+            color: #f0b9b9;
+        }
+
+        .tpcs_dash_sidebar a:last-child:hover {
+            background: rgba(239, 68, 68, .12);
+            color: #ffd0d0;
+        }
+
+        /* ==========================================================
+           WORKSPACE
+        ========================================================== */
+        .tpcs_dash_workspace {
+            position: relative;
+            z-index: 1;
+            margin-left: 296px;
+            padding: 100px 18px 18px 0;
+        }
+
+        .tpcs_dash_container {
+            position: relative;
+            min-height: calc(100vh - 118px);
+            padding: 40px;
+            border-radius: 28px;
+            border: 1px solid transparent;
+            background:
+                linear-gradient(180deg, rgba(20, 56, 75, .55), rgba(10, 31, 44, .78)) padding-box,
+                linear-gradient(150deg, rgba(245, 181, 68, .6), rgba(255, 255, 255, .07) 38%, rgba(127, 209, 199, .25)) border-box;
+            box-shadow: 0 40px 80px -36px rgba(0, 0, 0, .6);
+        }
+
+        /* gold hairline across the top edge */
+        .tpcs_dash_container::before {
+            content: "";
+            position: absolute;
+            top: -1px;
+            left: 14%;
+            right: 14%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--amber), transparent);
+        }
+
+        .tpcs_dash_container h1 {
+            font-family: var(--font-display);
+            font-size: clamp(30px, 4vw, 40px);
+            font-weight: 700;
+            letter-spacing: -.03em;
+            line-height: 1.1;
+            color: #fff;
+            margin-bottom: 18px;
+        }
+
+        .tpcs_dash_container h1::after {
+            content: "";
+            display: block;
+            width: 56px;
+            height: 3px;
+            border-radius: 3px;
+            background: var(--gold-gradient);
+            margin-top: 18px;
+        }
+
+        .tpcs_dash_container>p {
+            max-width: 700px;
+            font-size: 16px;
+            line-height: 1.85;
+            color: var(--muted);
+        }
+
+        /* ==========================================================
+           DASHBOARD STATISTICS
+        ========================================================== */
+        .tpcs_stats_grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 22px;
+            margin-top: 40px;
+        }
+
+        .tpcs_stat_card {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 24px;
+            background: rgba(255, 255, 255, .045);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 22px;
+            cursor: default;
+            transition: transform .3s, border-color .3s, background .3s;
+        }
+
+        .tpcs_stat_card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(245, 181, 68, .45);
+            background: rgba(255, 255, 255, .06);
+        }
+
+        .tpcs_stat_icon {
+            width: 62px;
+            height: 62px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            font-size: 24px;
+            border: 1px solid;
+        }
+
+        .tpcs_stat_icon.students {
+            color: var(--sea);
+            background: rgba(127, 209, 199, .12);
+            border-color: rgba(127, 209, 199, .45);
+        }
+
+        .tpcs_stat_icon.categories {
+            color: var(--amber);
+            background: rgba(245, 181, 68, .12);
+            border-color: rgba(245, 181, 68, .45);
+        }
+
+        .tpcs_stat_icon.pending {
+            color: #9ec5ff;
+            background: rgba(158, 197, 255, .12);
+            border-color: rgba(158, 197, 255, .45);
+        }
+
+        .tpcs_stat_icon.completed {
+            color: #86efac;
+            background: rgba(134, 239, 172, .12);
+            border-color: rgba(134, 239, 172, .45);
+        }
+
+        .tpcs_stat_info small {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #e6f2f4;
+            margin-bottom: 4px;
+        }
+
+        .tpcs_stat_info h2 {
+            font-family: var(--font-display);
+            font-size: 40px;
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -.03em;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .tpcs_stat_info span {
+            font-size: 13px;
+            color: var(--dim);
+        }
+
+        /* ==========================================================
+           RESPONSIVE
+        ========================================================== */
+        @media(max-width:991px) {
+
+            .tpcs_dash_sidebar {
+                width: 86px;
+                padding: 18px 12px;
+                align-items: center;
+            }
+
+            .tpcs_dash_sidebar a {
+                padding: 8px;
+                justify-content: center;
+            }
+
+            .tpcs_dash_sidebar span {
+                display: none;
+            }
+
+            .tpcs_dash_workspace {
+                margin-left: 122px;
+            }
+
+            /* search collapses to a round icon button */
+            .tpcs_dash_search {
+                width: 46px;
+                height: 46px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, .05);
+                border: 1px solid rgba(255, 255, 255, .14);
+            }
+
+            .tpcs_dash_search input {
+                display: none;
+            }
+
+            .tpcs_dash_search i {
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @media(max-width:768px) {
+
+            .tpcs_dash_topbar {
+                top: 10px;
+                left: 12px;
+                right: 12px;
+                height: 64px;
+                padding: 0 14px 0 10px;
+                border-radius: 22px;
+            }
+
+            .tpcs_dash_brand img {
+                width: 42px;
+                height: 42px;
+            }
+
+            .tpcs_dash_brand h2 {
+                font-size: 22px;
+            }
+
+            /* sidebar becomes a floating bottom navigation bar */
+            .tpcs_dash_sidebar {
+                top: auto;
+                left: 12px;
+                right: 12px;
+                bottom: 12px;
+                width: auto;
+                height: 70px;
+                padding: 8px 10px;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 4px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                border-radius: 24px;
+            }
+
+            .tpcs_dash_sidebar a {
+                flex-shrink: 0;
+                margin: 0;
+                padding: 5px;
+            }
+
+            .tpcs_dash_sidebar a:hover {
+                transform: none;
+            }
+
+            .tpcs_dash_sidebar a i {
+                width: 44px;
+                height: 44px;
+            }
+
+            .tpcs_dash_sidebar a:last-child {
+                margin-top: 0;
+            }
+
+            .tpcs_dash_workspace {
+                margin-left: 0;
+                padding: 88px 12px 96px;
+            }
+
+            .tpcs_dash_container {
+                min-height: calc(100vh - 190px);
+                padding: 26px 20px;
+                border-radius: 24px;
+            }
+
+            .tpcs_dash_container>p {
+                font-size: 15px;
+            }
+
+            .tpcs_stats_grid {
+                margin-top: 30px;
+                gap: 16px;
+            }
+        }
+
+        @media(max-width:420px) {
+
+            .tpcs_dash_right {
+                gap: 8px;
+            }
+
+            .tpcs_stat_card {
+                padding: 20px;
+            }
+
+            .tpcs_stat_icon {
+                width: 56px;
+                height: 56px;
+                font-size: 22px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .tpcs_stat_card,
+            .tpcs_dash_sidebar a,
+            .tpcs_dash_notify {
+                transition: none;
+            }
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <section>
+
+        <div class="tpcs_dash_topbar">
+
+            <div class="tpcs_dash_brand">
+
+                <img src="logo.png" alt="TPCS Logo">
+
+                <h2>TP<span>CS</span></h2>
+
+            </div>
+
+
+            <div class="tpcs_dash_right">
+
+                <div class="tpcs_dash_search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input type="text" placeholder="Search anything...">
+
+                </div>
+
+                <div class="tpcs_dash_notify" aria-label="Notifications">
+
+                    <i class="fa-regular fa-bell"></i>
+
+                </div>
+
+
+
+            </div>
+
+        </div>
+
+
+
+        <div class="tpcs_dash_sidebar">
+
+
+
+            <a href="dashboard.html" class="active" title="Dashboard">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+
+            <a href="studentr.html" title="Student Records">
+
+                <i class="fa-solid fa-user-graduate"></i>
+
+                <span>Student Records</span>
+
+            </a>
+
+            <a href="categories.html" title="Payment Categories">
+
+                <i class="fa-solid fa-layer-group"></i>
+
+                <span>Payment Categories</span>
+
+            </a>
+
+            <a href="codes.html" title="Verification Codes">
+
+                <i class="fa-solid fa-key"></i>
+
+                <span>Verification Codes</span>
+
+            </a>
+
+            <a href="paymentr.html" title="Payment Records">
+
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+
+                <span>Payment Records</span>
+
+            </a>
+
+            <a href="export.html" title="Export Records">
+
+                <i class="fa-solid fa-file-export"></i>
+
+                <span>Export Records</span>
+
+            </a>
+
+
+            <a href="index.html" title="Logout">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>Logout</span>
+
+            </a>
+
+        </div>
+
+
+
+        <div class="tpcs_dash_workspace">
+
+            <div class="tpcs_dash_container">
+
+                <h1>
+
+                    Dashboard
+
+                </h1>
+
+                <p>
+
+                    Welcome to the Tourism Payment Confirmation System administration dashboard. Use the navigation menu
+                    to manage students, upload class lists, create payment categories, generate verification codes and
+                    review payment confirmations securely.
+
+                </p>
+
+
+
+
+                <section>
+
+                    <div class="tpcs_stats_grid">
+
+                        <div class="tpcs_stat_card">
+
+                            <div class="tpcs_stat_icon students">
+
+                                <i class="fa-solid fa-user-graduate"></i>
+
+                            </div>
+
+                            <div class="tpcs_stat_info">
+
+                                <small>Total Students</small>
+
+                                <h2 id="totalStudents">0</h2>
+
+                                <span>Registered students</span>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="tpcs_stat_card">
+
+                            <div class="tpcs_stat_icon categories">
+
+                                <i class="fa-solid fa-layer-group"></i>
+
+                            </div>
+
+                            <div class="tpcs_stat_info">
+
+                                <small>Payment Categories</small>
+
+                                <h2 id="totalCategories">0</h2>
+
+                                <span>Available categories</span>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="tpcs_stat_card">
+
+                            <div class="tpcs_stat_icon pending">
+
+                                <i class="fa-solid fa-clock"></i>
+
+                            </div>
+
+                            <div class="tpcs_stat_info">
+
+                                <small>Verification codes</small>
+
+                                <h2 id="pendingPayments">0</h2>
+
+                                <span>Generated Codes</span>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="tpcs_stat_card">
+
+                            <div class="tpcs_stat_icon completed">
+
+                                <i class="fa-solid fa-circle-check"></i>
+
+                            </div>
+
+                            <div class="tpcs_stat_info">
+
+                                <small>Uploaded Payments</small>
+
+                                <h2 id="verifiedPayments">0</h2>
+
+                                <span>Uploaded Receipts</span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script type="module">
+
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+
+        import {
+            getAuth,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+        import {
+            getFirestore,
+            collection,
+            getDocs
+        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+
+
+        const firebaseConfig = {
+
+            apiKey: "AIzaSyC_IYj5k6TQhOgR2_dayL9BROef6M81KIk",
+
+            authDomain: "tpcs-e6b64.firebaseapp.com",
+
+            projectId: "tpcs-e6b64",
+
+            storageBucket: "tpcs-e6b64.firebasestorage.app",
+
+            messagingSenderId: "650125374204",
+
+            appId: "1:650125374204:web:7a9060c31be9d72dfe5d79"
+
+        };
+
+
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+
+
+        onAuthStateChanged(auth, async (user) => {
+
+            if (!user) {
+
+                window.location.href = "admin.html";
+
+                return;
+
+            }
+
+            console.log("Admin verified:", user.email);
+
+            let totalStudents = 0;
+
+            const first = await getDocs(collection(db, "firstYearStudents"));
+            totalStudents += first.size;
+
+            const second = await getDocs(collection(db, "secondYearStudents"));
+            totalStudents += second.size;
+
+            const third = await getDocs(collection(db, "thirdYearStudents"));
+            totalStudents += third.size;
+
+            document.getElementById("totalStudents").textContent = totalStudents;
+
+            const categories = await getDocs(collection(db, "paymentCategories"));
+
+            document.getElementById("totalCategories").textContent = categories.size;
+
+            const codes = await getDocs(collection(db, "verificationCodes"));
+
+            document.getElementById("pendingPayments").textContent = codes.size;
+
+            const payments = await getDocs(collection(db, "paymentRecords"));
+
+            document.getElementById("verifiedPayments").textContent = payments.size;
+
+        });
+
+
+
+    </script>
+
+
+</body>
+
+</html>

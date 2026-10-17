@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#0a1f2c">
+
+    <link rel="icon" href="logo.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <title>Payment Records</title>
+
+    <style>
+        /* ==========================================================
+           DESIGN TOKENS (same family as the other TPCS pages)
+        ========================================================== */
+        :root {
+            --ink: #0a1f2c;
+            --ink-2: #123446;
+            --teal: #0e7c86;
+            --sea: #7fd1c7;
+            --amber: #f5b544;
+            --gold-light: #ffe3a1;
+            --gold-dark: #d9962a;
+            --text: #dbe9ec;
+            --muted: #9fb8c0;
+            --dim: #7fa0aa;
+
+            --font-display: 'Bricolage Grotesque', 'Plus Jakarta Sans', system-ui, sans-serif;
+            --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+            --gold-gradient: linear-gradient(135deg, var(--gold-light), var(--amber) 55%, var(--gold-dark));
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: var(--font-body);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.6;
+            background:
+                radial-gradient(circle at 10% 0%, rgba(14, 124, 134, .3) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(245, 181, 68, .12) 0%, transparent 38%),
+                linear-gradient(160deg, #0a1f2c, #07151f);
+            background-attachment: fixed;
+        }
+
+        /* ripple rings: same motif as the home page hero */
+        body::before {
+            content: "";
+            position: fixed;
+            width: 760px;
+            height: 760px;
+            right: -260px;
+            top: -280px;
+            border-radius: 50%;
+            background: repeating-radial-gradient(circle, transparent 0 38px, rgba(127, 209, 199, .07) 38px 39px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        a:focus-visible,
+        input:focus-visible,
+        button:focus-visible,
+        .tpcs_dash_notify:focus-visible,
+        .tpcs_range_card:focus-visible {
+            outline: 3px solid var(--amber);
+            outline-offset: 3px;
+        }
+
+        /* ==========================================================
+           TOP NAVBAR
+        ========================================================== */
+        .tpcs_dash_topbar {
+            position: fixed;
+            top: 14px;
+            left: 18px;
+            right: 18px;
+            height: 72px;
+            padding: 0 22px 0 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            background: rgba(10, 31, 44, .72);
+            backdrop-filter: blur(16px) saturate(140%);
+            -webkit-backdrop-filter: blur(16px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .28);
+            z-index: 1000;
+        }
+
+        .tpcs_dash_brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tpcs_dash_brand img {
+            width: 48px;
+            height: 48px;
+            padding: 6px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #1b3a4d, #0d2431);
+            border: 1px solid rgba(255, 255, 255, .12);
+        }
+
+        .tpcs_dash_brand h2 {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -.03em;
+            color: #fff;
+        }
+
+        .tpcs_dash_brand h2 span {
+            color: var(--amber);
+        }
+
+        .tpcs_dash_right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .tpcs_dash_search {
+            position: relative;
+        }
+
+        .tpcs_dash_search input {
+            width: 280px;
+            height: 46px;
+            padding: 0 18px 0 46px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            border-radius: 999px;
+            outline: none;
+            background: rgba(255, 255, 255, .05);
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 14px;
+            transition: border-color .3s, background .3s, box-shadow .3s;
+        }
+
+        .tpcs_dash_search input::placeholder {
+            color: #6f8b95;
+        }
+
+        .tpcs_dash_search input:focus {
+            background: rgba(255, 255, 255, .08);
+            border-color: var(--amber);
+            box-shadow: 0 0 0 4px rgba(245, 181, 68, .16);
+        }
+
+        .tpcs_dash_search i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dim);
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .tpcs_dash_notify {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 17px;
+            color: var(--amber);
+            background: rgba(245, 181, 68, .12);
+            border: 1px solid rgba(245, 181, 68, .45);
+            transition: background .25s, color .25s, transform .25s;
+        }
+
+        .tpcs_dash_notify:hover {
+            background: var(--amber);
+            color: var(--ink);
+            transform: translateY(-2px);
+        }
+
+        /* ==========================================================
+           SIDEBAR
+        ========================================================== */
+        .tpcs_dash_sidebar {
+            position: fixed;
+            top: 100px;
+            left: 18px;
+            bottom: 18px;
+            width: 260px;
+            padding: 22px 14px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: linear-gradient(180deg, rgba(20, 56, 75, .7), rgba(10, 31, 44, .85));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 26px;
+            box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .6);
+            z-index: 900;
+        }
+
+        .tpcs_dash_sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border: 1px solid transparent;
+            border-radius: 16px;
+            text-decoration: none;
+            color: #b9cdd3;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background .25s, color .25s, transform .25s, border-color .25s;
+        }
+
+        .tpcs_dash_sidebar a i {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .06);
+            font-size: 15px;
+            transition: background .25s, color .25s;
+        }
+
+        .tpcs_dash_sidebar a:hover {
+            background: rgba(255, 255, 255, .06);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        .tpcs_dash_sidebar a.active {
+            background: linear-gradient(90deg, rgba(245, 181, 68, .2), rgba(245, 181, 68, .04));
+            border-color: rgba(245, 181, 68, .4);
+            color: #fff;
+        }
+
+        .tpcs_dash_sidebar a.active i {
+            background: var(--gold-gradient);
+            color: var(--ink);
+        }
+
+        .tpcs_dash_sidebar a:last-child {
+            margin-top: auto;
+            margin-bottom: 0;
+            color: #f0b9b9;
+        }
+
+        .tpcs_dash_sidebar a:last-child:hover {
+            background: rgba(239, 68, 68, .12);
+            color: #ffd0d0;
+        }
+
+        /* ==========================================================
+           WORKSPACE
+        ========================================================== */
+        .tpcs_dash_workspace {
+            position: relative;
+            z-index: 1;
+            margin-left: 296px;
+            padding: 100px 18px 18px 0;
+        }
+
+        .tpcs_dash_container {
+            position: relative;
+            min-height: calc(100vh - 118px);
+            padding: 40px;
+            border-radius: 28px;
+            border: 1px solid transparent;
+            background:
+                linear-gradient(180deg, rgba(20, 56, 75, .55), rgba(10, 31, 44, .78)) padding-box,
+                linear-gradient(150deg, rgba(245, 181, 68, .6), rgba(255, 255, 255, .07) 38%, rgba(127, 209, 199, .25)) border-box;
+            box-shadow: 0 40px 80px -36px rgba(0, 0, 0, .6);
+        }
+
+        .tpcs_dash_container::before {
+            content: "";
+            position: absolute;
+            top: -1px;
+            left: 14%;
+            right: 14%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--amber), transparent);
+        }
+
+        .tpcs_dash_container h1 {
+            font-family: var(--font-display);
+            font-size: clamp(30px, 4vw, 40px);
+            font-weight: 700;
+            letter-spacing: -.03em;
+            line-height: 1.1;
+            color: #fff;
+            margin-bottom: 18px;
+        }
+
+        .tpcs_dash_container h1::after {
+            content: "";
+            display: block;
+            width: 56px;
+            height: 3px;
+            border-radius: 3px;
+            background: var(--gold-gradient);
+            margin-top: 18px;
+        }
+
+        .tpcs_dash_container>p {
+            max-width: 700px;
+            font-size: 16px;
+            line-height: 1.85;
+            color: var(--muted);
+        }
+
+        /* ==========================================================
+           PAYMENT RECORDS PAGE
+        ========================================================== */
+        .payment_records {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .page_title h2 {
+            font-family: var(--font-display);
+            font-size: clamp(30px, 4vw, 40px);
+            font-weight: 700;
+            letter-spacing: -.03em;
+            line-height: 1.1;
+            color: #fff;
+            margin-bottom: 14px;
+        }
+
+        .page_title h2::after {
+            content: "";
+            display: block;
+            width: 56px;
+            height: 3px;
+            border-radius: 3px;
+            background: var(--gold-gradient);
+            margin-top: 18px;
+        }
+
+        .page_title p {
+            max-width: 700px;
+            font-size: 16px;
+            line-height: 1.85;
+            color: var(--muted);
+        }
+
+        .search_card,
+        .student_card,
+        .summary_card,
+        .history_card {
+            padding: 28px;
+            background: rgba(255, 255, 255, .045);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 26px;
+        }
+
+        /* search is the featured card */
+        .search_card {
+            border-color: rgba(245, 181, 68, .35);
+            background: linear-gradient(135deg, rgba(245, 181, 68, .07), rgba(255, 255, 255, .03));
+        }
+
+        .card_header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .card_header i {
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 15px;
+            font-size: 19px;
+            color: var(--amber);
+            background: rgba(245, 181, 68, .12);
+            border: 1px solid rgba(245, 181, 68, .45);
+        }
+
+        .student_card .card_header i {
+            color: var(--sea);
+            background: rgba(127, 209, 199, .12);
+            border-color: rgba(127, 209, 199, .45);
+        }
+
+        .summary_card .card_header i {
+            color: #9ec5ff;
+            background: rgba(158, 197, 255, .12);
+            border-color: rgba(158, 197, 255, .45);
+        }
+
+        .history_card .card_header i {
+            color: #86efac;
+            background: rgba(134, 239, 172, .12);
+            border-color: rgba(134, 239, 172, .45);
+        }
+
+        .card_header h3 {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -.02em;
+            color: #fff;
+        }
+
+        .card_text {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        /* ---------- search ---------- */
+        .search_area {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+
+        .search_area input {
+            flex: 1;
+            height: 56px;
+            padding: 0 20px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .05);
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 15px;
+            outline: none;
+            transition: border-color .3s, background .3s, box-shadow .3s;
+        }
+
+        .search_area input::placeholder {
+            color: #6f8b95;
+        }
+
+        .search_area input:focus {
+            background: rgba(255, 255, 255, .08);
+            border-color: var(--amber);
+            box-shadow: 0 0 0 4px rgba(245, 181, 68, .16);
+        }
+
+        .search_area button {
+            position: relative;
+            overflow: hidden;
+            height: 56px;
+            padding: 0 28px;
+            border: none;
+            border-radius: 14px;
+            background: var(--gold-gradient);
+            color: var(--ink);
+            font-family: var(--font-body);
+            font-size: 15.5px;
+            font-weight: 700;
+            letter-spacing: .02em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+            transition: transform .3s, box-shadow .3s;
+            box-shadow: 0 16px 36px -10px rgba(245, 181, 68, .55);
+        }
+
+        .search_area button::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -80%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .45), transparent);
+            transform: skewX(-20deg);
+            transition: left .7s;
+        }
+
+        .search_area button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 22px 44px -10px rgba(245, 181, 68, .7);
+        }
+
+        .search_area button:hover::after {
+            left: 130%;
+        }
+
+        /* ---------- student information ---------- */
+        .student_grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .info_box {
+            padding: 18px 20px;
+            background: rgba(10, 31, 44, .55);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 18px;
+        }
+
+        .info_box span {
+            display: block;
+            font-size: 13.5px;
+            color: var(--dim);
+            margin-bottom: 6px;
+        }
+
+        .info_box h4 {
+            font-family: var(--font-display);
+            font-size: 19px;
+            font-weight: 600;
+            color: #fff;
+            word-break: break-word;
+        }
+
+        /* ---------- summary ---------- */
+        .summary_boxes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .summary_box {
+            padding: 26px 22px;
+            text-align: center;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(14, 124, 134, .4), rgba(10, 31, 44, .7));
+            border: 1px solid rgba(127, 209, 199, .35);
+        }
+
+        .summary_box h2 {
+            font-family: var(--font-display);
+            font-size: 38px;
+            font-weight: 700;
+            letter-spacing: -.03em;
+            line-height: 1.15;
+            color: var(--gold-light);
+            margin-bottom: 6px;
+        }
+
+        .summary_box span {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e6f2f4;
+        }
+
+        /* ---------- history ---------- */
+        .payment_item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            column-gap: 20px;
+            align-items: center;
+            margin-top: 14px;
+            padding: 20px 22px;
+            background: rgba(10, 31, 44, .55);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-left: 4px solid #86efac;
+            border-radius: 18px;
+            transition: background .25s, border-color .25s;
+        }
+
+        .payment_item:hover {
+            background: rgba(255, 255, 255, .06);
+        }
+
+        .payment_item h4 {
+            grid-column: 1;
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -.015em;
+            color: #fff;
+            margin-bottom: 4px;
+        }
+
+        .payment_item p {
+            grid-column: 1;
+            font-size: 14.5px;
+            color: var(--muted);
+        }
+
+        .payment_item p strong {
+            color: #e6f2f4;
+            font-weight: 600;
+        }
+
+        .payment_item button {
+            grid-column: 2;
+            grid-row: 1 / span 2;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(245, 181, 68, .5);
+            background: rgba(245, 181, 68, .12);
+            color: var(--amber);
+            font-family: var(--font-body);
+            font-size: 14.5px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background .25s, color .25s, transform .25s;
+        }
+
+        .payment_item button:hover {
+            background: var(--amber);
+            color: var(--ink);
+            transform: translateY(-2px);
+        }
+
+        /* ---------- empty state ---------- */
+        .empty_state {
+            padding: 64px 25px;
+            text-align: center;
+            background: rgba(255, 255, 255, .03);
+            border: 2px dashed rgba(245, 181, 68, .35);
+            border-radius: 26px;
+        }
+
+        .empty_state i {
+            font-size: 56px;
+            color: var(--amber);
+            opacity: .85;
+            margin-bottom: 20px;
+        }
+
+        .empty_state h3 {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -.02em;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .empty_state p {
+            max-width: 500px;
+            margin: auto;
+            font-size: 15.5px;
+            line-height: 1.75;
+            color: var(--muted);
+        }
+
+        /* ---------- receipt viewer ---------- */
+        .receipt_popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(4, 12, 18, .78);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            z-index: 99999;
+        }
+
+        .receipt_box {
+            width: 100%;
+            max-width: 680px;
+            overflow: hidden;
+            border: 1px solid transparent;
+            background:
+                linear-gradient(180deg, #14384b, #0a1f2c) padding-box,
+                linear-gradient(150deg, rgba(245, 181, 68, .7), rgba(255, 255, 255, .08) 45%, rgba(127, 209, 199, .3)) border-box;
+            border-radius: 24px;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, .5);
+            animation: popupShow .25s ease;
+        }
+
+        .receipt_header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+        }
+
+        .receipt_header h3 {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .receipt_header button {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid rgba(245, 181, 68, .5);
+            background: rgba(245, 181, 68, .12);
+            color: var(--amber);
+            font-size: 17px;
+            cursor: pointer;
+            transition: background .25s, color .25s;
+        }
+
+        .receipt_header button:hover {
+            background: var(--amber);
+            color: var(--ink);
+        }
+
+        .receipt_body {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .receipt_body img {
+            width: 100%;
+            max-height: 75vh;
+            object-fit: contain;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, .12);
+            background: rgba(255, 255, 255, .04);
+        }
+
+        /* ==========================================================
+           POPUP
+        ========================================================== */
+        .popup_overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(4, 12, 18, .72);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            padding: 20px;
+        }
+
+        .popup_box {
+            width: 100%;
+            max-width: 360px;
+            border: 1px solid transparent;
+            background:
+                linear-gradient(180deg, #14384b, #0a1f2c) padding-box,
+                linear-gradient(150deg, rgba(245, 181, 68, .7), rgba(255, 255, 255, .08) 45%, rgba(127, 209, 199, .3)) border-box;
+            border-radius: 24px;
+            padding: 32px 28px 28px;
+            text-align: center;
+            animation: popupShow .25s ease;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, .5);
+        }
+
+        .popup_icon {
+            width: 70px;
+            height: 70px;
+            margin: auto;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .popup_box h3 {
+            margin-bottom: 10px;
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .popup_box p {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .popup_btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: var(--gold-gradient);
+            color: var(--ink);
+            font-family: var(--font-body);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform .25s, box-shadow .25s;
+        }
+
+        .popup_btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px -8px rgba(245, 181, 68, .6);
+        }
+
+        @keyframes popupShow {
+            from {
+                transform: scale(.85);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* ==========================================================
+           RESPONSIVE
+        ========================================================== */
+        @media(max-width:991px) {
+
+            .tpcs_dash_sidebar {
+                width: 86px;
+                padding: 18px 12px;
+                align-items: center;
+            }
+
+            .tpcs_dash_sidebar a {
+                padding: 8px;
+                justify-content: center;
+            }
+
+            .tpcs_dash_sidebar span {
+                display: none;
+            }
+
+            .tpcs_dash_workspace {
+                margin-left: 122px;
+            }
+
+            .tpcs_dash_search {
+                width: 46px;
+                height: 46px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, .05);
+                border: 1px solid rgba(255, 255, 255, .14);
+            }
+
+            .tpcs_dash_search input {
+                display: none;
+            }
+
+            .tpcs_dash_search i {
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @media(max-width:768px) {
+
+            .tpcs_dash_topbar {
+                top: 10px;
+                left: 12px;
+                right: 12px;
+                height: 64px;
+                padding: 0 14px 0 10px;
+                border-radius: 22px;
+            }
+
+            .tpcs_dash_brand img {
+                width: 42px;
+                height: 42px;
+            }
+
+            .tpcs_dash_brand h2 {
+                font-size: 22px;
+            }
+
+            /* sidebar becomes a floating bottom navigation bar */
+            .tpcs_dash_sidebar {
+                top: auto;
+                left: 12px;
+                right: 12px;
+                bottom: 12px;
+                width: auto;
+                height: 70px;
+                padding: 8px 10px;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 4px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                border-radius: 24px;
+            }
+
+            .tpcs_dash_sidebar a {
+                flex-shrink: 0;
+                margin: 0;
+                padding: 5px;
+            }
+
+            .tpcs_dash_sidebar a:hover {
+                transform: none;
+            }
+
+            .tpcs_dash_sidebar a i {
+                width: 44px;
+                height: 44px;
+            }
+
+            .tpcs_dash_sidebar a:last-child {
+                margin-top: 0;
+            }
+
+            .tpcs_dash_workspace {
+                margin-left: 0;
+                padding: 88px 12px 96px;
+            }
+
+            .tpcs_dash_container {
+                min-height: calc(100vh - 190px);
+                padding: 26px 18px;
+                border-radius: 24px;
+            }
+
+            .tpcs_dash_container>p {
+                font-size: 15px;
+            }
+
+            }
+
+        @media(max-width:420px) {
+
+            .tpcs_dash_right {
+                gap: 8px;
+            }
+
+            }
+
+        @media(max-width:768px) {
+
+            .search_area {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search_area button {
+                justify-content: center;
+            }
+
+            .student_grid,
+            .summary_boxes {
+                grid-template-columns: 1fr;
+            }
+
+            .search_card,
+            .student_card,
+            .summary_card,
+            .history_card {
+                padding: 22px 18px;
+                border-radius: 22px;
+            }
+
+            .payment_item {
+                grid-template-columns: 1fr;
+            }
+
+            .payment_item button {
+                grid-column: 1;
+                grid-row: auto;
+                justify-self: stretch;
+                justify-content: center;
+                margin-top: 14px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .search_area button,
+            .payment_item button,
+            .tpcs_dash_sidebar a,
+            .tpcs_dash_notify,
+            .popup_box {
+                transition: none;
+                animation: none;
+            }
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <section>
+
+        <div class="tpcs_dash_topbar">
+
+            <div class="tpcs_dash_brand">
+
+                <img src="logo.png" alt="TPCS Logo">
+
+                <h2>TP<span>CS</span></h2>
+
+            </div>
+
+
+            <div class="tpcs_dash_right">
+
+                <div class="tpcs_dash_search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input type="text" placeholder="Search anything...">
+
+                </div>
+
+                <div class="tpcs_dash_notify" aria-label="Notifications">
+
+                    <i class="fa-regular fa-bell"></i>
+
+                </div>
+
+
+
+            </div>
+
+        </div>
+
+
+
+        <div class="tpcs_dash_sidebar">
+
+            <a href="dashboard.html" title="Dashboard">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+
+            <a href="studentr.html" title="Student Records">
+
+                <i class="fa-solid fa-user-graduate"></i>
+
+                <span>Student Records</span>
+
+            </a>
+
+            <a href="categories.html" title="Payment Categories">
+
+                <i class="fa-solid fa-layer-group"></i>
+
+                <span>Payment Categories</span>
+
+            </a>
+
+            <a href="codes.html" title="Verification Codes">
+
+                <i class="fa-solid fa-key"></i>
+
+                <span>Verification Codes</span>
+
+            </a>
+
+            <a href="paymentr.html" class="active" title="Payment Records">
+
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+
+                <span>Payment Records</span>
+
+            </a>
+
+            <a href="export.html" title="Export Records">
+
+                <i class="fa-solid fa-file-export"></i>
+
+                <span>Export Records</span>
+
+            </a>
+
+
+            <a href="index.html" title="Logout">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>Logout</span>
+
+            </a>
+
+        </div>
+
+
+
+
+        <div class="tpcs_dash_workspace">
+
+            <div class="tpcs_dash_container">
+
+                <section class="payment_records">
+
+                    <div class="page_title">
+
+                        <div>
+
+                            <h2>Payment Records</h2>
+
+                            <p>Search and review student payment history and uploaded receipts.</p>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Search Card -->
+
+                    <div class="search_card">
+
+                        <div class="card_header">
+
+                            <i class="fas fa-search"></i>
+
+                            <h3>Search Student</h3>
+
+                        </div>
+
+                        <p class="card_text">
+                            Enter the student's number to retrieve completed payment records.
+                        </p>
+
+                        <div class="search_area">
+
+                            <input type="text" id="searchStudent" aria-label="Student number"
+                                placeholder="Enter Student Number (Example: 3051)">
+
+                            <button onclick="searchStudent()">
+
+                                <i class="fas fa-search"></i>
+
+                                Search Student
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Student Information -->
+
+                    <div class="student_card" id="studentCard" style="display:none;">
+
+                        <div class="card_header">
+
+                            <i class="fas fa-user-graduate"></i>
+
+                            <h3>Student Information</h3>
+
+                        </div>
+
+                        <div class="student_grid">
+
+                            <div class="info_box">
+
+                                <span>Student Name</span>
+
+                                <h4 id="studentName">-</h4>
+
+                            </div>
+
+                            <div class="info_box">
+
+                                <span>Registration Number</span>
+
+                                <h4 id="registrationNumber">-</h4>
+
+                            </div>
+
+                            <div class="info_box">
+
+                                <span>Student Number</span>
+
+                                <h4 id="studentNumber">-</h4>
+
+                            </div>
+
+                            <div class="info_box">
+
+                                <span>Academic Year</span>
+
+                                <h4 id="academicYear">-</h4>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Payment Summary -->
+
+                    <div class="summary_card" id="summaryCard" style="display:none;">
+
+                        <div class="card_header">
+
+                            <i class="fas fa-chart-pie"></i>
+
+                            <h3>Payment Summary</h3>
+
+                        </div>
+
+                        <div class="summary_boxes">
+
+                            <div class="summary_box">
+
+                                <h2 id="totalPaid">0</h2>
+
+                                <span>Paid Categories</span>
+
+                            </div>
+
+                            <div class="summary_box">
+
+                                <h2 id="lastPayment">-</h2>
+
+                                <span>Latest Payment</span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- Payment History -->
+
+                    <div class="history_card" id="historyCard" style="display:none;">
+
+                        <div class="card_header">
+
+                            <i class="fas fa-file-invoice-dollar"></i>
+
+                            <h3>Payment History</h3>
+
+                        </div>
+
+                        <div id="paymentHistory">
+
+                            <!-- Payment cards will appear here -->
+
+                        </div>
+
+                    </div>
+
+                    <!-- Empty State -->
+
+                    <div class="empty_state" id="emptyState">
+
+                        <i class="fas fa-folder-open"></i>
+
+                        <h3>No Student Selected</h3>
+
+                        <p>
+                            Search using a student number to display payment information and uploaded receipts.
+                        </p>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <div id="receiptPopup" class="receipt_popup">
+
+        <div class="receipt_box">
+
+            <div class="receipt_header">
+
+                <h3>Payment Receipt</h3>
+
+                <button onclick="closeReceipt()" aria-label="Close receipt">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+            <div class="receipt_body">
+
+                <img id="receiptPreview" src="" alt="Receipt">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="popupOverlay" class="popup_overlay">
+
+        <div class="popup_box">
+
+            <div id="popupIcon" class="popup_icon">✓</div>
+
+            <h3 id="popupTitle"></h3>
+
+            <p id="popupMessage"></p>
+
+            <button onclick="closePopup()" class="popup_btn">
+
+                OK
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+        import {
+            getAuth,
+            onAuthStateChanged
+        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+        import {
+            getFirestore,
+            collection,
+            query,
+            where,
+            getDocs
+        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+
+            apiKey: "AIzaSyC_IYj5k6TQhOgR2_dayL9BROef6M81KIk",
+
+            authDomain: "tpcs-e6b64.firebaseapp.com",
+
+            projectId: "tpcs-e6b64",
+
+            storageBucket: "tpcs-e6b64.firebasestorage.app",
+
+            messagingSenderId: "650125374204",
+
+            appId: "1:650125374204:web:7a9060c31be9d72dfe5d79"
+
+        };
+
+        const app = initializeApp(firebaseConfig);
+
+        const auth = getAuth(app);
+
+        const db = getFirestore(app);
+
+        window.db = db;
+        window.collection = collection;
+        window.query = query;
+        window.where = where;
+        window.getDocs = getDocs;
+
+        onAuthStateChanged(auth, (user) => {
+
+            if (user) {
+
+                console.log("Admin verified:", user.email);
+
+            } else {
+
+                window.location.href = "admin.html";
+
+            }
+
+        });
+
+    </script>
+
+
+    <script>
+
+        async function searchStudent() {
+
+            const studentNumber = document.getElementById("searchStudent").value.trim();
+
+            if (studentNumber === "") {
+
+                showError("Please enter a student number.");
+
+                return;
+
+            }
+
+            const q = window.query(
+
+                window.collection(window.db, "paymentRecords"),
+
+                window.where("studentNumber", "==", studentNumber)
+
+            );
+
+            const snapshot = await window.getDocs(q);
+
+
+            if (snapshot.empty) {
+
+                showError("No payment records found.");
+
+                return;
+
+            }
+
+            const firstRecord = snapshot.docs[0].data();
+
+            document.getElementById("studentName").textContent = firstRecord.studentName;
+
+            document.getElementById("registrationNumber").textContent = firstRecord.registrationNumber;
+
+            document.getElementById("studentNumber").textContent = firstRecord.studentNumber;
+
+            document.getElementById("academicYear").textContent = firstRecord.academicYear;
+
+            document.getElementById("studentCard").style.display = "block";
+
+            document.getElementById("summaryCard").style.display = "block";
+
+            document.getElementById("historyCard").style.display = "block";
+
+            document.getElementById("emptyState").style.display = "none";
+            const paymentHistory = document.getElementById("paymentHistory");
+
+            paymentHistory.innerHTML = "";
+
+            snapshot.forEach((doc) => {
+
+                const payment = doc.data();
+
+                paymentHistory.innerHTML += `
+
+        <div class="payment_item">
+
+            <h4>${payment.paymentCategory}</h4>
+
+            <p><strong>Submitted:</strong> ${payment.submittedAt ? payment.submittedAt.toDate().toLocaleDateString() : "Unknown Date"}</p>
+
+           <button onclick="viewReceipt(\`${payment.receiptImage}\`)">
+
+                <i class="fa-solid fa-image"></i>
+
+                View Receipt
+
+            </button>
+
+        </div>
+
+    `;
+
+            });
+        }
+
+        function viewReceipt(image) {
+
+            document.getElementById("receiptPreview").src = image;
+
+            document.getElementById("receiptPopup").style.display = "flex";
+
+        }
+
+        function closeReceipt() {
+
+            document.getElementById("receiptPopup").style.display = "none";
+
+            document.getElementById("receiptPreview").src = "";
+
+        }
+
+
+        function showSuccess(message) {
+
+            document.getElementById("popupOverlay").style.display = "flex";
+
+            document.getElementById("popupIcon").innerHTML = "✓";
+
+            document.getElementById("popupIcon").style.background = "#dcfce7";
+
+            document.getElementById("popupIcon").style.color = "#16a34a";
+
+            document.getElementById("popupTitle").innerHTML = "Success";
+
+            document.getElementById("popupMessage").innerHTML = message;
+
+        }
+
+        function showError(message) {
+
+            document.getElementById("popupOverlay").style.display = "flex";
+
+            document.getElementById("popupIcon").innerHTML = "✕";
+
+            document.getElementById("popupIcon").style.background = "#fee2e2";
+
+            document.getElementById("popupIcon").style.color = "#dc2626";
+
+            document.getElementById("popupTitle").innerHTML = "Error";
+
+            document.getElementById("popupMessage").innerHTML = message;
+
+        }
+
+        function closePopup() {
+
+            document.getElementById("popupOverlay").style.display = "none";
+
+        }
+    </script>
+</body>
+
+</html>

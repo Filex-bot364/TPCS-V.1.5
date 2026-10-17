@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#0a1f2c">
+
+    <link rel="icon" href="logo.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <title>Payment categories</title>
+
+    <style>
+        /* ==========================================================
+           DESIGN TOKENS (same family as the other TPCS pages)
+        ========================================================== */
+        :root {
+            --ink: #0a1f2c;
+            --ink-2: #123446;
+            --teal: #0e7c86;
+            --sea: #7fd1c7;
+            --amber: #f5b544;
+            --gold-light: #ffe3a1;
+            --gold-dark: #d9962a;
+            --text: #dbe9ec;
+            --muted: #9fb8c0;
+            --dim: #7fa0aa;
+
+            --font-display: 'Bricolage Grotesque', 'Plus Jakarta Sans', system-ui, sans-serif;
+            --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+            --gold-gradient: linear-gradient(135deg, var(--gold-light), var(--amber) 55%, var(--gold-dark));
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: var(--font-body);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            line-height: 1.6;
+            background:
+                radial-gradient(circle at 10% 0%, rgba(14, 124, 134, .3) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(245, 181, 68, .12) 0%, transparent 38%),
+                linear-gradient(160deg, #0a1f2c, #07151f);
+            background-attachment: fixed;
+        }
+
+        /* ripple rings: same motif as the home page hero */
+        body::before {
+            content: "";
+            position: fixed;
+            width: 760px;
+            height: 760px;
+            right: -260px;
+            top: -280px;
+            border-radius: 50%;
+            background: repeating-radial-gradient(circle, transparent 0 38px, rgba(127, 209, 199, .07) 38px 39px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        a:focus-visible,
+        input:focus-visible,
+        button:focus-visible,
+        .tpcs_dash_notify:focus-visible,
+        .tpcs_range_card:focus-visible {
+            outline: 3px solid var(--amber);
+            outline-offset: 3px;
+        }
+
+        /* ==========================================================
+           TOP NAVBAR
+        ========================================================== */
+        .tpcs_dash_topbar {
+            position: fixed;
+            top: 14px;
+            left: 18px;
+            right: 18px;
+            height: 72px;
+            padding: 0 22px 0 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            background: rgba(10, 31, 44, .72);
+            backdrop-filter: blur(16px) saturate(140%);
+            -webkit-backdrop-filter: blur(16px) saturate(140%);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 24px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .28);
+            z-index: 1000;
+        }
+
+        .tpcs_dash_brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .tpcs_dash_brand img {
+            width: 48px;
+            height: 48px;
+            padding: 6px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #1b3a4d, #0d2431);
+            border: 1px solid rgba(255, 255, 255, .12);
+        }
+
+        .tpcs_dash_brand h2 {
+            font-family: var(--font-display);
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -.03em;
+            color: #fff;
+        }
+
+        .tpcs_dash_brand h2 span {
+            color: var(--amber);
+        }
+
+        .tpcs_dash_right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .tpcs_dash_search {
+            position: relative;
+        }
+
+        .tpcs_dash_search input {
+            width: 280px;
+            height: 46px;
+            padding: 0 18px 0 46px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            border-radius: 999px;
+            outline: none;
+            background: rgba(255, 255, 255, .05);
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 14px;
+            transition: border-color .3s, background .3s, box-shadow .3s;
+        }
+
+        .tpcs_dash_search input::placeholder {
+            color: #6f8b95;
+        }
+
+        .tpcs_dash_search input:focus {
+            background: rgba(255, 255, 255, .08);
+            border-color: var(--amber);
+            box-shadow: 0 0 0 4px rgba(245, 181, 68, .16);
+        }
+
+        .tpcs_dash_search i {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dim);
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .tpcs_dash_notify {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 17px;
+            color: var(--amber);
+            background: rgba(245, 181, 68, .12);
+            border: 1px solid rgba(245, 181, 68, .45);
+            transition: background .25s, color .25s, transform .25s;
+        }
+
+        .tpcs_dash_notify:hover {
+            background: var(--amber);
+            color: var(--ink);
+            transform: translateY(-2px);
+        }
+
+        /* ==========================================================
+           SIDEBAR
+        ========================================================== */
+        .tpcs_dash_sidebar {
+            position: fixed;
+            top: 100px;
+            left: 18px;
+            bottom: 18px;
+            width: 260px;
+            padding: 22px 14px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background: linear-gradient(180deg, rgba(20, 56, 75, .7), rgba(10, 31, 44, .85));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: 26px;
+            box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .6);
+            z-index: 900;
+        }
+
+        .tpcs_dash_sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            border: 1px solid transparent;
+            border-radius: 16px;
+            text-decoration: none;
+            color: #b9cdd3;
+            font-size: 15px;
+            font-weight: 500;
+            transition: background .25s, color .25s, transform .25s, border-color .25s;
+        }
+
+        .tpcs_dash_sidebar a i {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .06);
+            font-size: 15px;
+            transition: background .25s, color .25s;
+        }
+
+        .tpcs_dash_sidebar a:hover {
+            background: rgba(255, 255, 255, .06);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        .tpcs_dash_sidebar a.active {
+            background: linear-gradient(90deg, rgba(245, 181, 68, .2), rgba(245, 181, 68, .04));
+            border-color: rgba(245, 181, 68, .4);
+            color: #fff;
+        }
+
+        .tpcs_dash_sidebar a.active i {
+            background: var(--gold-gradient);
+            color: var(--ink);
+        }
+
+        .tpcs_dash_sidebar a:last-child {
+            margin-top: auto;
+            margin-bottom: 0;
+            color: #f0b9b9;
+        }
+
+        .tpcs_dash_sidebar a:last-child:hover {
+            background: rgba(239, 68, 68, .12);
+            color: #ffd0d0;
+        }
+
+        /* ==========================================================
+           WORKSPACE
+        ========================================================== */
+        .tpcs_dash_workspace {
+            position: relative;
+            z-index: 1;
+            margin-left: 296px;
+            padding: 100px 18px 18px 0;
+        }
+
+        .tpcs_dash_container {
+            position: relative;
+            min-height: calc(100vh - 118px);
+            padding: 40px;
+            border-radius: 28px;
+            border: 1px solid transparent;
+            background:
+                linear-gradient(180deg, rgba(20, 56, 75, .55), rgba(10, 31, 44, .78)) padding-box,
+                linear-gradient(150deg, rgba(245, 181, 68, .6), rgba(255, 255, 255, .07) 38%, rgba(127, 209, 199, .25)) border-box;
+            box-shadow: 0 40px 80px -36px rgba(0, 0, 0, .6);
+        }
+
+        .tpcs_dash_container::before {
+            content: "";
+            position: absolute;
+            top: -1px;
+            left: 14%;
+            right: 14%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--amber), transparent);
+        }
+
+        .tpcs_dash_container h1 {
+            font-family: var(--font-display);
+            font-size: clamp(30px, 4vw, 40px);
+            font-weight: 700;
+            letter-spacing: -.03em;
+            line-height: 1.1;
+            color: #fff;
+            margin-bottom: 18px;
+        }
+
+        .tpcs_dash_container h1::after {
+            content: "";
+            display: block;
+            width: 56px;
+            height: 3px;
+            border-radius: 3px;
+            background: var(--gold-gradient);
+            margin-top: 18px;
+        }
+
+        .tpcs_dash_container>p {
+            max-width: 700px;
+            font-size: 16px;
+            line-height: 1.85;
+            color: var(--muted);
+        }
+
+
+        /* ==========================================================
+           PAYMENT CATEGORIES PAGE
+        ========================================================== */
+        .tpcs_categories_page {
+            position: relative;
+            z-index: 1;
+            margin: 100px 18px 18px 296px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* ---------- banner ---------- */
+        .tpcs_category_banner {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 24px;
+            padding: 34px 38px;
+            border-radius: 28px;
+            border: 1px solid transparent;
+            background:
+                linear-gradient(135deg, rgba(23, 65, 90, .9), rgba(10, 31, 44, .95)) padding-box,
+                linear-gradient(150deg, rgba(245, 181, 68, .65), rgba(255, 255, 255, .07) 40%, rgba(127, 209, 199, .28)) border-box;
+            box-shadow: 0 40px 80px -36px rgba(0, 0, 0, .6);
+        }
+
+        .tpcs_category_banner::before {
+            content: "";
+            position: absolute;
+            top: -1px;
+            left: 14%;
+            right: 14%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--amber), transparent);
+        }
+
+        .tpcs_category_banner::after {
+            content: "";
+            position: absolute;
+            width: 420px;
+            height: 420px;
+            right: -150px;
+            top: -200px;
+            border-radius: 50%;
+            background: repeating-radial-gradient(circle, transparent 0 32px, rgba(245, 181, 68, .1) 32px 33px);
+            pointer-events: none;
+        }
+
+        .tpcs_banner_content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .tpcs_banner_icon {
+            width: 72px;
+            height: 72px;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 22px;
+            font-size: 28px;
+            color: var(--amber);
+            background: rgba(245, 181, 68, .12);
+            border: 1px solid rgba(245, 181, 68, .5);
+            box-shadow: 0 0 0 8px rgba(245, 181, 68, .06);
+        }
+
+        .tpcs_banner_content h1 {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 3.6vw, 38px);
+            font-weight: 700;
+            letter-spacing: -.03em;
+            line-height: 1.1;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .tpcs_banner_content p {
+            max-width: 650px;
+            font-size: 15.5px;
+            line-height: 1.75;
+            color: var(--muted);
+        }
+
+        .tpcs_banner_counter {
+            position: relative;
+            z-index: 1;
+            flex-shrink: 0;
+            width: 112px;
+            height: 112px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--gold-gradient);
+            color: var(--ink);
+            box-shadow: 0 0 0 8px rgba(245, 181, 68, .12), 0 20px 40px -12px rgba(245, 181, 68, .5);
+        }
+
+        .tpcs_banner_counter span {
+            font-family: var(--font-display);
+            font-size: 38px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -.03em;
+        }
+
+        .tpcs_banner_counter small {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-top: 2px;
+        }
+
+        /* ---------- layout ---------- */
+        .tpcs_category_layout {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .tpcs_category_form_card,
+        .tpcs_category_table_card {
+            padding: 30px;
+            border-radius: 26px;
+            background: linear-gradient(180deg, rgba(20, 56, 75, .5), rgba(10, 31, 44, .72));
+            border: 1px solid rgba(255, 255, 255, .1);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            box-shadow: 0 30px 60px -36px rgba(0, 0, 0, .6);
+        }
+
+        .tpcs_card_heading {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 26px;
+            padding-bottom: 22px;
+            border-bottom: 1px solid rgba(255, 255, 255, .1);
+        }
+
+        .tpcs_heading_icon {
+            width: 54px;
+            height: 54px;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 16px;
+            font-size: 21px;
+            color: var(--sea);
+            background: rgba(127, 209, 199, .12);
+            border: 1px solid rgba(127, 209, 199, .45);
+        }
+
+        .tpcs_card_heading h2 {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -.02em;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+
+        .tpcs_card_heading p {
+            color: var(--muted);
+            font-size: 14.5px;
+        }
+
+        /* ---------- form ---------- */
+        .tpcs_form_group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tpcs_form_group label {
+            margin-bottom: 9px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: .01em;
+            color: #e6f2f4;
+        }
+
+        .tpcs_form_group input,
+        .tpcs_form_group select {
+            height: 56px;
+            padding: 0 18px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .05);
+            color: #fff;
+            font-family: var(--font-body);
+            font-size: 15px;
+            outline: none;
+            transition: border-color .3s, background .3s, box-shadow .3s;
+        }
+
+        .tpcs_form_group select {
+            padding-right: 46px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9' fill='none'%3E%3Cpath d='M1 1.5L7 7.5L13 1.5' stroke='%23f5b544' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+        }
+
+        .tpcs_form_group select option {
+            background: #0f2a3a;
+            color: #fff;
+        }
+
+        .tpcs_form_group input::placeholder {
+            color: #6f8b95;
+        }
+
+        .tpcs_form_group input:focus,
+        .tpcs_form_group select:focus {
+            background-color: rgba(255, 255, 255, .08);
+            border-color: var(--amber);
+            box-shadow: 0 0 0 4px rgba(245, 181, 68, .16);
+        }
+
+        .tpcs_category_save_btn {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            height: 56px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 14px;
+            background: var(--gold-gradient);
+            color: var(--ink);
+            font-family: var(--font-body);
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: .02em;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            transition: transform .3s, box-shadow .3s;
+            box-shadow: 0 16px 36px -10px rgba(245, 181, 68, .55);
+        }
+
+        .tpcs_category_save_btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -80%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .45), transparent);
+            transform: skewX(-20deg);
+            transition: left .7s;
+        }
+
+        .tpcs_category_save_btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 22px 44px -10px rgba(245, 181, 68, .7);
+        }
+
+        .tpcs_category_save_btn:hover::after {
+            left: 130%;
+        }
+
+        .tpcs_category_save_btn:active {
+            transform: scale(.98);
+        }
+
+        /* ---------- table ---------- */
+        .tpcs_table_container {
+            overflow: auto;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, .1);
+            background: rgba(7, 21, 31, .55);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(245, 181, 68, .5) transparent;
+        }
+
+        .tpcs_category_table {
+            width: 100%;
+            min-width: 520px;
+            border-collapse: collapse;
+        }
+
+        .tpcs_category_table th {
+            padding: 16px 20px;
+            text-align: left;
+            background: #12303f;
+            border-bottom: 1px solid rgba(245, 181, 68, .4);
+            color: var(--gold-light);
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: .02em;
+        }
+
+        .tpcs_category_table td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, .07);
+            color: var(--text);
+            font-size: 14.5px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .tpcs_category_table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tpcs_category_table tbody tr {
+            transition: background .25s;
+        }
+
+        .tpcs_category_table tbody tr:hover {
+            background: rgba(255, 255, 255, .045);
+        }
+
+        .tpcs_status_active,
+        .tpcs_status_inactive {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid;
+        }
+
+        .tpcs_status_active {
+            background: rgba(134, 239, 172, .12);
+            border-color: rgba(134, 239, 172, .45);
+            color: #86efac;
+        }
+
+        .tpcs_status_inactive {
+            background: rgba(252, 165, 165, .12);
+            border-color: rgba(252, 165, 165, .45);
+            color: #fca5a5;
+        }
+
+        .tpcs_action_btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-right: 6px;
+            transition: transform .3s;
+        }
+
+        .tpcs_edit_btn {
+            background: rgba(158, 197, 255, .15);
+            color: #9ec5ff;
+        }
+
+        .tpcs_delete_btn {
+            background: rgba(252, 165, 165, .15);
+            color: #fca5a5;
+        }
+
+        .tpcs_action_btn:hover {
+            transform: scale(1.08);
+        }
+
+        /* ==========================================================
+           POPUP
+        ========================================================== */
+        .popup_overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(4, 12, 18, .72);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            padding: 20px;
+        }
+
+        .popup_box {
+            width: 100%;
+            max-width: 360px;
+            border: 1px solid transparent;
+            background:
+                linear-gradient(180deg, #14384b, #0a1f2c) padding-box,
+                linear-gradient(150deg, rgba(245, 181, 68, .7), rgba(255, 255, 255, .08) 45%, rgba(127, 209, 199, .3)) border-box;
+            border-radius: 24px;
+            padding: 32px 28px 28px;
+            text-align: center;
+            animation: popupShow .25s ease;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, .5);
+        }
+
+        .popup_icon {
+            width: 70px;
+            height: 70px;
+            margin: auto;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .popup_box h3 {
+            margin-bottom: 10px;
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .popup_box p {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .popup_btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: var(--gold-gradient);
+            color: var(--ink);
+            font-family: var(--font-body);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform .25s, box-shadow .25s;
+        }
+
+        .popup_btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px -8px rgba(245, 181, 68, .6);
+        }
+
+        @keyframes popupShow {
+            from {
+                transform: scale(.85);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* ==========================================================
+           RESPONSIVE
+        ========================================================== */
+        @media(max-width:1200px) {
+
+            .tpcs_category_layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width:991px) {
+
+            .tpcs_dash_sidebar {
+                width: 86px;
+                padding: 18px 12px;
+                align-items: center;
+            }
+
+            .tpcs_dash_sidebar a {
+                padding: 8px;
+                justify-content: center;
+            }
+
+            .tpcs_dash_sidebar span {
+                display: none;
+            }
+
+            .tpcs_categories_page {
+                margin-left: 122px;
+            }
+
+            .tpcs_dash_search {
+                width: 46px;
+                height: 46px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, .05);
+                border: 1px solid rgba(255, 255, 255, .14);
+            }
+
+            .tpcs_dash_search input {
+                display: none;
+            }
+
+            .tpcs_dash_search i {
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @media(max-width:768px) {
+
+            .tpcs_dash_topbar {
+                top: 10px;
+                left: 12px;
+                right: 12px;
+                height: 64px;
+                padding: 0 14px 0 10px;
+                border-radius: 22px;
+            }
+
+            .tpcs_dash_brand img {
+                width: 42px;
+                height: 42px;
+            }
+
+            .tpcs_dash_brand h2 {
+                font-size: 22px;
+            }
+
+            /* sidebar becomes a floating bottom navigation bar */
+            .tpcs_dash_sidebar {
+                top: auto;
+                left: 12px;
+                right: 12px;
+                bottom: 12px;
+                width: auto;
+                height: 70px;
+                padding: 8px 10px;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 4px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                border-radius: 24px;
+            }
+
+            .tpcs_dash_sidebar a {
+                flex-shrink: 0;
+                margin: 0;
+                padding: 5px;
+            }
+
+            .tpcs_dash_sidebar a:hover {
+                transform: none;
+            }
+
+            .tpcs_dash_sidebar a i {
+                width: 44px;
+                height: 44px;
+            }
+
+            .tpcs_dash_sidebar a:last-child {
+                margin-top: 0;
+            }
+
+            .tpcs_categories_page {
+                margin: 88px 12px 96px;
+                gap: 18px;
+            }
+
+            .tpcs_category_banner {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 26px 22px;
+                border-radius: 24px;
+            }
+
+            .tpcs_banner_content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .tpcs_banner_counter {
+                width: 96px;
+                height: 96px;
+            }
+
+            .tpcs_banner_counter span {
+                font-size: 32px;
+            }
+
+            .tpcs_category_form_card,
+            .tpcs_category_table_card {
+                padding: 22px 18px;
+                border-radius: 22px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .tpcs_category_save_btn,
+            .tpcs_category_save_btn::after,
+            .tpcs_dash_sidebar a,
+            .tpcs_dash_notify,
+            .popup_box {
+                transition: none;
+                animation: none;
+            }
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+        <div class="tpcs_dash_topbar">
+
+            <div class="tpcs_dash_brand">
+
+                <img src="logo.png" alt="TPCS Logo">
+
+                <h2>TP<span>CS</span></h2>
+
+            </div>
+
+
+            <div class="tpcs_dash_right">
+
+                <div class="tpcs_dash_search">
+
+                    <i class="fa-solid fa-magnifying-glass"></i>
+
+                    <input type="text" placeholder="Search anything...">
+
+                </div>
+
+                <div class="tpcs_dash_notify" aria-label="Notifications">
+
+                    <i class="fa-regular fa-bell"></i>
+
+                </div>
+
+
+
+            </div>
+
+        </div>
+
+
+
+        <div class="tpcs_dash_sidebar">
+
+            <a href="dashboard.html" title="Dashboard">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>Dashboard</span>
+
+            </a>
+
+            <a href="studentr.html" title="Student Records">
+
+                <i class="fa-solid fa-user-graduate"></i>
+
+                <span>Student Records</span>
+
+            </a>
+
+            <a href="categories.html" class="active" title="Payment Categories">
+
+                <i class="fa-solid fa-layer-group"></i>
+
+                <span>Payment Categories</span>
+
+            </a>
+
+            <a href="codes.html" title="Verification Codes">
+
+                <i class="fa-solid fa-key"></i>
+
+                <span>Verification Codes</span>
+
+            </a>
+
+            <a href="paymentr.html" title="Payment Records">
+
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+
+                <span>Payment Records</span>
+
+            </a>
+
+            <a href="export.html" title="Export Records">
+
+                <i class="fa-solid fa-file-export"></i>
+
+                <span>Export Records</span>
+
+            </a>
+
+
+            <a href="index.html" title="Logout">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>Logout</span>
+
+            </a>
+
+        </div>
+
+
+
+
+        <section class="tpcs_categories_page">
+
+            <div class="tpcs_category_banner">
+
+                <div class="tpcs_banner_content">
+
+                    <div class="tpcs_banner_icon">
+
+                        <i class="fa-solid fa-credit-card"></i>
+
+                    </div>
+
+                    <div>
+
+                        <h1>Payment Categories</h1>
+
+                        <p>
+                            Create and manage all department payment categories that will be used throughout the payment
+                            verification system.
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="tpcs_banner_counter">
+
+                    <span id="categoryCount">0</span>
+
+                    <small>Categories</small>
+
+                </div>
+
+            </div>
+
+            <!--==============================
+            MAIN CONTENT
+    ===============================-->
+
+            <div class="tpcs_category_layout">
+
+                <!--==============================
+                ADD CATEGORY
+        ===============================-->
+
+                <div class="tpcs_category_form_card">
+
+                    <div class="tpcs_card_heading">
+
+                        <div class="tpcs_heading_icon">
+
+                            <i class="fa-solid fa-circle-plus"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h2>Add New Category</h2>
+
+                            <p>Create a new payment category.</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="tpcs_form_group">
+
+                        <label for="categoryName">Category Name</label>
+
+                        <input type="text" id="categoryName" placeholder="Field Practical">
+
+                    </div>
+
+                    <div class="tpcs_form_group">
+
+                        <label for="categoryAmount">Amount (TZS)</label>
+
+                        <input type="number" id="categoryAmount" placeholder="50000">
+
+                    </div>
+
+                    <div class="tpcs_form_group">
+
+                        <label for="categoryYear">Academic Year</label>
+
+                        <select id="categoryYear">
+
+                            <option>2025/2026</option>
+
+                            <option>2026/2027</option>
+
+                            <option>2027/2028</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="tpcs_form_group">
+
+                        <label for="categoryStatus">Status</label>
+
+                        <select id="categoryStatus">
+
+                            <option value="Active">Active</option>
+
+                            <option value="Inactive">Inactive</option>
+
+                        </select>
+
+                    </div>
+
+                    <button class="tpcs_category_save_btn" onclick="saveCategory()">
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        Save Category
+
+                    </button>
+
+                </div>
+
+                <!--==============================
+                CATEGORY TABLE
+        ===============================-->
+
+                <div class="tpcs_category_table_card">
+
+                    <div class="tpcs_card_heading">
+
+                        <div class="tpcs_heading_icon">
+
+                            <i class="fa-solid fa-layer-group"></i>
+
+                        </div>
+
+                        <div>
+
+                            <h2>Saved Categories</h2>
+
+                            <p>Department payment categories.</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="tpcs_table_container">
+
+                        <table class="tpcs_category_table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Category</th>
+
+                                    <th>Amount</th>
+
+                                    <th>Academic Year</th>
+
+                                    <th>Status</th>
+
+                                    <th aria-hidden="true"></th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="categoryTable">
+
+                                <!-- Loaded from Firestore -->
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <div id="popupOverlay" class="popup_overlay">
+
+            <div class="popup_box">
+
+                <div id="popupIcon" class="popup_icon">✓</div>
+
+                <h3 id="popupTitle"></h3>
+
+                <p id="popupMessage"></p>
+
+                <button onclick="closePopup()" class="popup_btn">
+
+                    OK
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <script type="module">
+
+            import { initializeApp }
+                from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+            import {
+                getFirestore,
+                collection,
+                getDocs,
+                addDoc,
+                setDoc,
+                doc,
+                deleteDoc,
+                updateDoc
+            }
+                from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+            import {
+                getAuth,
+                onAuthStateChanged
+            }
+                from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+
+            const firebaseConfig = {
+
+                apiKey: "AIzaSyC_IYj5k6TQhOgR2_dayL9BROef6M81KIk",
+
+                authDomain: "tpcs-e6b64.firebaseapp.com",
+
+                projectId: "tpcs-e6b64",
+
+                storageBucket: "tpcs-e6b64.firebasestorage.app",
+
+                messagingSenderId: "650125374204",
+
+                appId: "1:650125374204:web:7a9060c31be9d72dfe5d79"
+
+            };
+
+
+            const app = initializeApp(firebaseConfig);
+
+            const db = getFirestore(app);
+
+            const auth = getAuth(app);
+
+
+            /* Make Firebase available to other scripts */
+
+            window.db = db;
+
+            window.collection = collection;
+            window.getDocs = getDocs;
+            window.addDoc = addDoc;
+
+            window.doc = doc;
+            window.setDoc = setDoc;
+
+            window.deleteDoc = deleteDoc;
+            window.updateDoc = updateDoc;
+
+
+            console.log("Firebase Ready");
+
+
+            onAuthStateChanged(auth, (user) => {
+
+                if (user) {
+
+                    console.log("Admin verified:", user.email);
+
+                }
+
+                else {
+
+                    window.location.href = "admin.html";
+
+                }
+
+            });
+
+
+            async function saveCategory() {
+
+                const categoryName = document.getElementById("categoryName").value.trim();
+                const categoryAmount = document.getElementById("categoryAmount").value.trim();
+                const categoryYear = document.getElementById("categoryYear").value;
+                const categoryStatus = document.getElementById("categoryStatus").value;
+
+                if (
+                    categoryName === "" ||
+                    categoryAmount === ""
+                ) {
+                    showError("Please fill in all required fields.");
+                    return;
+                }
+
+                try {
+
+                    await window.addDoc(
+
+                        window.collection(window.db, "paymentCategories"),
+
+                        {
+                            categoryName: categoryName,
+                            amount: Number(categoryAmount),
+                            academicYear: categoryYear,
+                            status: categoryStatus,
+                            createdAt: new Date()
+                        }
+
+                    );
+
+                    showSuccess("Payment category saved successfully.");
+
+                    document.getElementById("categoryName").value = "";
+                    document.getElementById("categoryAmount").value = "";
+                    document.getElementById("categoryYear").selectedIndex = 0;
+                    document.getElementById("categoryStatus").selectedIndex = 0;
+
+                }
+
+                catch (error) {
+
+                    console.error(error);
+                    showError("Failed to save category.");
+
+                }
+
+            }
+            window.saveCategory = saveCategory;
+            window.closePopup = closePopup;
+
+            async function loadCategories() {
+
+                const table = document.getElementById("categoryTable");
+                table.innerHTML = "";
+
+                const snapshot = await window.getDocs(
+                    window.collection(window.db, "paymentCategories")
+                );
+
+                let total = 0;
+
+                snapshot.forEach((doc) => {
+
+                    total++;
+
+                    const data = doc.data();
+
+                    const statusClass =
+                        data.status === "Active"
+                            ? "tpcs_status_active"
+                            : "tpcs_status_inactive";
+
+                    table.innerHTML += `
+        <tr>
+
+            <td>${data.categoryName}</td>
+
+            <td>TZS ${Number(data.amount).toLocaleString()}</td>
+
+            <td>${data.academicYear}</td>
+
+            <td>
+
+                <span class="${statusClass}">
+                    ${data.status}
+                </span>
+
+            </td>
+
+            <td>
+
+
+
+            </td>
+
+        </tr>
+        `;
+
+                });
+
+                document.getElementById("categoryCount").innerHTML = total;
+
+            }
+
+            loadCategories();
+
+            function showSuccess(message) {
+
+                document.getElementById("popupOverlay").style.display = "flex";
+
+                document.getElementById("popupIcon").innerHTML = "✓";
+
+                document.getElementById("popupIcon").style.background = "#dcfce7";
+
+                document.getElementById("popupIcon").style.color = "#16a34a";
+
+                document.getElementById("popupTitle").innerHTML = "Success";
+
+                document.getElementById("popupMessage").innerHTML = message;
+
+            }
+
+            function showError(message) {
+
+                document.getElementById("popupOverlay").style.display = "flex";
+
+                document.getElementById("popupIcon").innerHTML = "✕";
+
+                document.getElementById("popupIcon").style.background = "#fee2e2";
+
+                document.getElementById("popupIcon").style.color = "#dc2626";
+
+                document.getElementById("popupTitle").innerHTML = "Error";
+
+                document.getElementById("popupMessage").innerHTML = message;
+
+            }
+
+            function closePopup() {
+
+                document.getElementById("popupOverlay").style.display = "none";
+
+            }
+
+        </script>
+</body>
+
+</html>
