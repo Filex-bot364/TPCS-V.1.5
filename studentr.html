@@ -663,354 +663,6 @@
             padding: 15px 20px;
             text-align: left;
             background: #12303f;
-          var(--font-display);
-            font-size: clamp(30px, 4vw, 40px);
-            font-weight: 700;
-            letter-spacing: -.03em;
-            line-height: 1.1;
-            color: #fff;
-            margin-bottom: 18px;
-        }
-
-        .tpcs_dash_container h1::after {
-            content: "";
-            display: block;
-            width: 56px;
-            height: 3px;
-            border-radius: 3px;
-            background: var(--gold-gradient);
-            margin-top: 18px;
-        }
-
-        .tpcs_dash_container>p {
-            max-width: 700px;
-            font-size: 16px;
-            line-height: 1.85;
-            color: var(--muted);
-        }
-
-        /* ==========================================================
-           UPLOAD CARDS
-        ========================================================== */
-        .tpcs_student_upload_grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-            gap: 22px;
-            margin-top: 40px;
-        }
-
-        .tpcs_student_upload_card {
-            display: flex;
-            flex-direction: column;
-            padding: 28px;
-            background: rgba(255, 255, 255, .045);
-            border: 1px solid rgba(255, 255, 255, .1);
-            border-radius: 22px;
-            transition: border-color .3s, background .3s, transform .3s;
-        }
-
-        .tpcs_student_upload_card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(245, 181, 68, .45);
-            background: rgba(255, 255, 255, .06);
-        }
-
-        .tpcs_student_upload_header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 18px;
-        }
-
-        .tpcs_student_upload_icon {
-            width: 56px;
-            height: 56px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 16px;
-            font-size: 22px;
-            color: var(--sea);
-            background: rgba(127, 209, 199, .12);
-            border: 1px solid rgba(127, 209, 199, .45);
-        }
-
-        .tpcs_student_upload_header h3 {
-            font-family: var(--font-display);
-            font-size: 23px;
-            font-weight: 700;
-            letter-spacing: -.02em;
-            color: #fff;
-        }
-
-        .tpcs_student_upload_card p {
-            font-size: 14.5px;
-            color: var(--muted);
-            line-height: 1.7;
-            margin-bottom: 22px;
-        }
-
-        .tpcs_file_input {
-            width: 100%;
-            margin-top: auto;
-            margin-bottom: 14px;
-            padding: 12px;
-            border: 1.5px dashed rgba(245, 181, 68, .5);
-            border-radius: 14px;
-            background: rgba(255, 255, 255, .04);
-            color: var(--muted);
-            font-family: var(--font-body);
-            font-size: 13.5px;
-            cursor: pointer;
-            transition: border-color .3s, background .3s;
-        }
-
-        .tpcs_file_input:hover {
-            border-color: var(--amber);
-            background: rgba(245, 181, 68, .07);
-        }
-
-        .tpcs_file_input::file-selector-button {
-            border: none;
-            background: var(--gold-gradient);
-            color: var(--ink);
-            padding: 9px 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-right: 12px;
-            font-family: var(--font-body);
-            font-weight: 700;
-        }
-
-        .tpcs_upload_btn {
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-            height: 50px;
-            border: none;
-            border-radius: 14px;
-            background: var(--gold-gradient);
-            color: var(--ink);
-            font-family: var(--font-body);
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: .02em;
-            cursor: pointer;
-            transition: transform .3s, box-shadow .3s;
-            box-shadow: 0 14px 30px -10px rgba(245, 181, 68, .5);
-        }
-
-        .tpcs_upload_btn::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -80%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .45), transparent);
-            transform: skewX(-20deg);
-            transition: left .7s;
-        }
-
-        .tpcs_upload_btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 38px -10px rgba(245, 181, 68, .65);
-        }
-
-        .tpcs_upload_btn:hover::after {
-            left: 130%;
-        }
-
-        .tpcs_upload_btn:active {
-            transform: scale(.98);
-        }
-
-        /* ==========================================================
-           STUDENT RECORD PANELS
-        ========================================================== */
-        .tpcs_records_wrapper {
-            margin-top: 36px;
-            width: 100%;
-        }
-
-        .tpcs_records_card {
-            width: 100%;
-            padding: 30px;
-            background: rgba(255, 255, 255, .04);
-            border: 1px solid rgba(255, 255, 255, .1);
-            border-radius: 26px;
-        }
-
-        .tpcs_records_header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 26px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, .1);
-        }
-
-        .tpcs_records_heading {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .tpcs_records_icon {
-            width: 62px;
-            height: 62px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 18px;
-            font-size: 24px;
-            color: var(--amber);
-            background: rgba(245, 181, 68, .12);
-            border: 1px solid rgba(245, 181, 68, .45);
-        }
-
-        .tpcs_records_heading h2 {
-            font-family: var(--font-display);
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: -.025em;
-            color: #fff;
-        }
-
-        .tpcs_records_heading p {
-            font-size: 14.5px;
-            color: var(--muted);
-            margin-top: 2px;
-        }
-
-        .tpcs_records_count {
-            flex-shrink: 0;
-            padding: 9px 18px;
-            border-radius: 999px;
-            background: rgba(245, 181, 68, .12);
-            border: 1px solid rgba(245, 181, 68, .45);
-            color: var(--gold-light);
-            font-size: 14px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .tpcs_range_title {
-            font-family: var(--font-display);
-            font-size: 18px;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 14px;
-        }
-
-        .tpcs_range_grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 14px;
-            margin-bottom: 28px;
-        }
-
-        .tpcs_range_card {
-            padding: 18px;
-            text-align: center;
-            cursor: pointer;
-            background: rgba(255, 255, 255, .05);
-            border: 1px solid rgba(255, 255, 255, .1);
-            border-radius: 18px;
-            transition: background .3s, transform .3s, border-color .3s;
-        }
-
-        .tpcs_range_card i {
-            font-size: 20px;
-            color: var(--amber);
-            margin-bottom: 8px;
-            transition: color .3s;
-        }
-
-        .tpcs_range_card span {
-            display: block;
-            font-size: 14.5px;
-            font-weight: 600;
-            color: #e6f2f4;
-            transition: color .3s;
-        }
-
-        .tpcs_range_card:hover {
-            background: var(--gold-gradient);
-            border-color: transparent;
-            transform: translateY(-4px);
-        }
-
-        .tpcs_range_card:hover i,
-        .tpcs_range_card:hover span {
-            color: var(--ink);
-        }
-
-        .tpcs_search_box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 0 20px;
-            height: 54px;
-            margin-bottom: 20px;
-            background: rgba(255, 255, 255, .05);
-            border: 1px solid rgba(255, 255, 255, .14);
-            border-radius: 999px;
-            transition: border-color .3s, box-shadow .3s, background .3s;
-        }
-
-        .tpcs_search_box:focus-within {
-            background: rgba(255, 255, 255, .08);
-            border-color: var(--amber);
-            box-shadow: 0 0 0 4px rgba(245, 181, 68, .16);
-        }
-
-        .tpcs_search_box i {
-            color: var(--amber);
-            font-size: 16px;
-        }
-
-        .tpcs_search_box input {
-            width: 100%;
-            height: 100%;
-            border: none;
-            outline: none;
-            background: transparent;
-            font-family: var(--font-body);
-            font-size: 14.5px;
-            color: #fff;
-        }
-
-        .tpcs_search_box input::placeholder {
-            color: #6f8b95;
-        }
-
-        .tpcs_table_container {
-            max-height: 520px;
-            overflow: auto;
-            border-radius: 18px;
-            border: 1px solid rgba(255, 255, 255, .1);
-            background: rgba(7, 21, 31, .55);
-            scrollbar-width: thin;
-            scrollbar-color: rgba(245, 181, 68, .5) transparent;
-        }
-
-        .tpcs_student_table {
-            width: 100%;
-            min-width: 460px;
-            border-collapse: collapse;
-        }
-
-        .tpcs_student_table th {
-            position: sticky;
-            top: 0;
-            z-index: 1;
-            padding: 15px 20px;
-            text-align: left;
-            background: #12303f;
             border-bottom: 1px solid rgba(245, 181, 68, .4);
             color: var(--gold-light);
             font-size: 14px;
@@ -1123,6 +775,197 @@
             to {
                 transform: scale(1);
                 opacity: 1;
+            }
+        }
+
+        /* ==========================================================
+           UPLOAD PROGRESS POPUP
+        ========================================================== */
+        .upload_overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background:
+                radial-gradient(circle at 50% 45%, rgba(245, 181, 68, .14), transparent 55%),
+                rgba(4, 12, 18, .82);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 100000;
+        }
+
+        .upload_box {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            padding: 42px 32px 34px;
+            text-align: center;
+            border: 1px solid transparent;
+            background:
+                linear-gradient(180deg, #17445d, #0a1f2c) padding-box,
+                linear-gradient(150deg, rgba(255, 227, 161, .9), rgba(255, 255, 255, .1) 45%, rgba(127, 209, 199, .5)) border-box;
+            border-radius: 30px;
+            box-shadow:
+                0 0 60px rgba(245, 181, 68, .25),
+                0 40px 80px rgba(0, 0, 0, .55);
+            animation: popupShow .3s ease;
+        }
+
+        /* soft glowing aura behind the card */
+        .upload_box::before {
+            content: "";
+            position: absolute;
+            inset: -40px;
+            z-index: -1;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(245, 181, 68, .35), transparent 62%);
+            filter: blur(24px);
+            animation: uploadAura 2.6s ease-in-out infinite;
+        }
+
+        /* gold hairline across the top edge */
+        .upload_box::after {
+            content: "";
+            position: absolute;
+            top: -1px;
+            left: 18%;
+            right: 18%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ffe3a1, transparent);
+        }
+
+        .upload_ring {
+            position: relative;
+            width: 168px;
+            height: 168px;
+            margin: 0 auto 26px;
+        }
+
+        .upload_ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+            overflow: visible;
+        }
+
+        .upload_ring .ring_track {
+            fill: none;
+            stroke: rgba(255, 255, 255, .1);
+            stroke-width: 9;
+        }
+
+        .upload_ring .ring_bar {
+            fill: none;
+            stroke: url(#uploadGold);
+            stroke-width: 9;
+            stroke-linecap: round;
+            stroke-dasharray: 326.73;
+            stroke-dashoffset: 326.73;
+            transition: stroke-dashoffset .3s ease;
+            filter: drop-shadow(0 0 8px rgba(255, 215, 120, .95)) drop-shadow(0 0 18px rgba(245, 181, 68, .7));
+        }
+
+        .upload_percent {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 46px;
+            font-weight: 800;
+            letter-spacing: -.03em;
+            color: #fff;
+            text-shadow: 0 0 22px rgba(255, 227, 161, .85), 0 0 46px rgba(245, 181, 68, .55);
+        }
+
+        .upload_percent small {
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 8px;
+            margin-left: 2px;
+            color: var(--gold-light);
+        }
+
+        .upload_box h3 {
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -.02em;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .upload_count {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gold-light);
+        }
+
+        .upload_note {
+            margin-top: 6px;
+            font-size: 13.5px;
+            color: var(--muted);
+        }
+
+        .upload_bar {
+            position: relative;
+            height: 7px;
+            margin-top: 24px;
+            overflow: hidden;
+            border-radius: 7px;
+            background: rgba(255, 255, 255, .1);
+        }
+
+        .upload_bar span {
+            display: block;
+            width: 0%;
+            height: 100%;
+            border-radius: 7px;
+            background: var(--gold-gradient);
+            box-shadow: 0 0 14px rgba(255, 215, 120, .9);
+            transition: width .3s ease;
+        }
+
+        /* light sweep running over the bar */
+        .upload_bar::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: -40%;
+            width: 40%;
+            background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .7), transparent);
+            animation: uploadShine 1.5s ease-in-out infinite;
+        }
+
+        @keyframes uploadAura {
+
+            0%,
+            100% {
+                opacity: .65;
+                transform: scale(.96);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes uploadShine {
+            to {
+                left: 120%;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .upload_box::before,
+            .upload_bar::after {
+                animation: none;
             }
         }
 
@@ -1760,6 +1603,41 @@
 
     </section>
 
+    <!-- UPLOAD PROGRESS POPUP -->
+    <div id="uploadOverlay" class="upload_overlay" role="status" aria-live="polite">
+
+        <div class="upload_box">
+
+            <div class="upload_ring">
+
+                <svg viewBox="0 0 120 120" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="uploadGold" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#ffe3a1" />
+                            <stop offset="55%" stop-color="#f5b544" />
+                            <stop offset="100%" stop-color="#d9962a" />
+                        </linearGradient>
+                    </defs>
+                    <circle class="ring_track" cx="60" cy="60" r="52" />
+                    <circle class="ring_bar" id="uploadRing" cx="60" cy="60" r="52" />
+                </svg>
+
+                <div class="upload_percent"><span id="uploadPercent">0</span><small>%</small></div>
+
+            </div>
+
+            <h3 id="uploadTitle">Uploading Students</h3>
+
+            <div class="upload_count" id="uploadCount">0 of 0 students</div>
+
+            <div class="upload_note">Please keep this page open</div>
+
+            <div class="upload_bar" aria-hidden="true"><span id="uploadBarFill"></span></div>
+
+        </div>
+
+    </div>
+
     <div id="popupOverlay" class="popup_overlay">
 
         <div class="popup_box">
@@ -2032,7 +1910,12 @@
                 const table = document.getElementById("firstYearTable");
                 table.innerHTML = "";
 
+                showUploadProgress("First Year", students.length);
+                let uploadedRows = 0;
+
                 for (const student of students) {
+                    updateUploadProgress(uploadedRows, students.length);
+                    uploadedRows++;
                     const reg = (student["REGISTRATION NUMBER"] || "").trim();
                     const name = (student["NAME "] || student["NAME"] || "").trim();
 
@@ -2068,6 +1951,8 @@
     `;
 
                 }
+
+                await finishUploadProgress(students.length);
 
                 showSuccess(students.length + " First Year students uploaded successfully.");
 
@@ -2107,7 +1992,12 @@
                 const table = document.getElementById("secondYearTable");
                 table.innerHTML = "";
 
+                showUploadProgress("Second Year", students.length);
+                let uploadedRows = 0;
+
                 for (const student of students) {
+                    updateUploadProgress(uploadedRows, students.length);
+                    uploadedRows++;
 
                     const reg = (student["REGISTRATION NUMBER"] || "").trim();
                     const name = (student["NAME "] || student["NAME"] || "").trim();
@@ -2143,6 +2033,8 @@
             `;
 
                 }
+
+                await finishUploadProgress(students.length);
 
                 showSuccess(students.length + " Second Year students uploaded successfully.");
 
@@ -2183,7 +2075,12 @@
                 const table = document.getElementById("thirdYearTable");
                 table.innerHTML = "";
 
+                showUploadProgress("Third Year", students.length);
+                let uploadedRows = 0;
+
                 for (const student of students) {
+                    updateUploadProgress(uploadedRows, students.length);
+                    uploadedRows++;
 
                     const reg = (student["REGISTRATION NUMBER"] || "").trim();
                     const name = (student["NAME "] || student["NAME"] || "").trim();
@@ -2219,6 +2116,8 @@
             `;
 
                 }
+
+                await finishUploadProgress(students.length);
 
                 showSuccess(students.length + " Third Year students uploaded successfully.");
 
@@ -2290,6 +2189,44 @@
             loadThirdYearStudents();
 
         };
+
+        function showUploadProgress(label, total) {
+
+            document.getElementById("uploadTitle").textContent = "Uploading " + label + " Students";
+
+            updateUploadProgress(0, total);
+
+            document.getElementById("uploadOverlay").style.display = "flex";
+
+        }
+
+        function updateUploadProgress(done, total) {
+
+            const percent = total > 0 ? Math.round((done / total) * 100) : 0;
+
+            document.getElementById("uploadPercent").textContent = percent;
+
+            document.getElementById("uploadCount").textContent = done + " of " + total + " students";
+
+            document.getElementById("uploadBarFill").style.width = percent + "%";
+
+            // ring length is 2 x pi x 52 = 326.73
+            document.getElementById("uploadRing").style.strokeDashoffset = 326.73 * (1 - percent / 100);
+
+        }
+
+        async function finishUploadProgress(total) {
+
+            updateUploadProgress(total, total);
+
+            // let the student see 100% for a moment
+            await new Promise((resolve) => setTimeout(resolve, 700));
+
+            document.getElementById("uploadOverlay").style.display = "none";
+
+        }
+
+        console.log("Upload progress popup ready");
 
         function showSuccess(message) {
 
