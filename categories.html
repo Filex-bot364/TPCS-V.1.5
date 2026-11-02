@@ -465,6 +465,10 @@
         }
 
         /* ---------- layout ---------- */
+        .tpcs_category_layout > * {
+            min-width: 0;
+        }
+
         .tpcs_category_layout {
             display: grid;
             grid-template-columns: 380px 1fr;
@@ -659,6 +663,37 @@
             font-variant-numeric: tabular-nums;
         }
 
+        .tpcs_category_table th,
+        .tpcs_category_table td {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+        .tpcs_category_table td:nth-child(2) {
+            white-space: nowrap;
+        }
+
+        /* the Delete column stays visible even when the table scrolls sideways (phones) */
+        .tpcs_category_table th:last-child,
+        .tpcs_category_table td:last-child {
+            position: sticky;
+            right: 0;
+            z-index: 1;
+        }
+
+        .tpcs_category_table th:last-child {
+            background: #12303f;
+        }
+
+        .tpcs_category_table td:last-child {
+            background: #0b2230;
+            box-shadow: -10px 0 14px -10px rgba(0, 0, 0, .6);
+        }
+
+        .tpcs_category_table tbody tr:hover td:last-child {
+            background: #10293a;
+        }
+
         .tpcs_category_table tbody tr:last-child td {
             border-bottom: none;
         }
@@ -809,10 +844,30 @@
             }
         }
 
+        .popup_btn_row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .popup_btn_row .popup_btn {
+            flex: 1;
+        }
+
+        .popup_btn.ghost {
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .2);
+            color: #fff;
+        }
+
+        .popup_btn.danger {
+            background: #fca5a5;
+            color: var(--ink);
+        }
+
         /* ==========================================================
            RESPONSIVE
         ========================================================== */
-        @media(max-width:1200px) {
+        @media(max-width:1340px) {
 
             .tpcs_category_layout {
                 grid-template-columns: 1fr;
@@ -1226,7 +1281,7 @@
 
                                     <th>Status</th>
 
-                                    <th aria-hidden="true"></th>
+                                    <th>Action</th>
 
                                 </tr>
 
@@ -1247,6 +1302,28 @@
             </div>
 
         </section>
+
+        <div id="confirmOverlay" class="popup_overlay">
+
+            <div class="popup_box">
+
+                <div class="popup_icon" style="background:#fee2e2;color:#dc2626;">!</div>
+
+                <h3>Delete this category?</h3>
+
+                <p id="confirmText">This cannot be undone.</p>
+
+                <div class="popup_btn_row">
+
+                    <button type="button" id="confirmCancel" class="popup_btn ghost">Cancel</button>
+
+                    <button type="button" id="confirmDelete" class="popup_btn danger">Delete</button>
+
+                </div>
+
+            </div>
+
+        </div>
 
         <div id="popupOverlay" class="popup_overlay">
 
@@ -1382,6 +1459,13 @@
 
                     );
 
+                    // show the new category in the table straight away (no page refresh needed)
+                    try {
+                        await loadCategories();
+                    } catch (loadError) {
+                        console.error(loadError);
+                    }
+
                     showSuccess("Payment category saved successfully.");
 
                     document.getElementById("categoryName").value = "";
@@ -1402,16 +1486,28 @@
             window.saveCategory = saveCategory;
             window.closePopup = closePopup;
 
+            function escapeHtml(value) {
+                return String(value === undefined || value === null ? "" : value)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#39;");
+            }
+
+            let categoryNames = {};
+
             async function loadCategories() {
 
                 const table = document.getElementById("categoryTable");
-                table.innerHTML = "";
 
                 const snapshot = await window.getDocs(
                     window.collection(window.db, "paymentCategories")
                 );
 
+                let rows = "";
                 let total = 0;
+                categoryNames = {};
 
                 snapshot.forEach((doc) => {
 
@@ -1419,42 +1515,105 @@
 
                     const data = doc.data();
 
+                    categoryNames[doc.id] = data.categoryName;
+
                     const statusClass =
                         data.status === "Active"
                             ? "tpcs_status_active"
                             : "tpcs_status_inactive";
 
-                    table.innerHTML += `
+                    rows += `
         <tr>
-
-            <td>${data.categoryName}</td>
-
+            <td>${escapeHtml(data.categoryName)}</td>
             <td>TZS ${Number(data.amount).toLocaleString()}</td>
-
-            <td>${data.academicYear}</td>
-
+            <td>${escapeHtml(data.academicYear)}</td>
             <td>
-
                 <span class="${statusClass}">
-                    ${data.status}
+                    ${escapeHtml(data.status)}
                 </span>
-
             </td>
-
             <td>
-
-
-
+                <button type="button" class="tpcs_action_btn tpcs_delete_btn" data-id="${escapeHtml(doc.id)}"
+                    title="Delete category" aria-label="Delete ${escapeHtml(data.categoryName)}">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
             </td>
-
         </tr>
         `;
 
                 });
 
+                if (total === 0) {
+                    rows = '<tr><td colspan="5">No categories yet.</td></tr>';
+                }
+
+                table.innerHTML = rows;
+
                 document.getElementById("categoryCount").innerHTML = total;
 
             }
+
+            /* ---------- delete a category (asks first) ---------- */
+
+            let pendingDeleteId = null;
+
+            document.getElementById("categoryTable").addEventListener("click", function (e) {
+
+                const button = e.target.closest("button[data-id]");
+
+                if (!button) { return; }
+
+                pendingDeleteId = button.dataset.id;
+
+                document.getElementById("confirmText").textContent =
+                    "\"" + (categoryNames[pendingDeleteId] || "This category") +
+                    "\" will be removed. Payments and codes already saved keep the category name.";
+
+                document.getElementById("confirmOverlay").style.display = "flex";
+
+            });
+
+            document.getElementById("confirmCancel").addEventListener("click", function () {
+
+                pendingDeleteId = null;
+
+                document.getElementById("confirmOverlay").style.display = "none";
+
+            });
+
+            document.getElementById("confirmDelete").addEventListener("click", async function () {
+
+                const id = pendingDeleteId;
+
+                pendingDeleteId = null;
+
+                document.getElementById("confirmOverlay").style.display = "none";
+
+                if (!id) { return; }
+
+                try {
+
+                    await window.deleteDoc(window.doc(window.db, "paymentCategories", id));
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    showError("Failed to delete category.");
+
+                    return;
+
+                }
+
+                try {
+                    await loadCategories();
+                } catch (loadError) {
+                    console.error(loadError);
+                }
+
+                showSuccess("Category deleted successfully.");
+
+            });
 
             loadCategories();
 
